@@ -34,6 +34,8 @@ const weather = {
 
     // Display 5-day forecast
     this.displayForecast(data);
+    this.displayForecast2(data);
+    
   },
 
   updateWeatherUI({ city, icon, description, datetime, temp, feels_like, temp_min, temp_max, humidity, windSpeed }) {
@@ -112,6 +114,77 @@ const weather = {
         alert('Alerts have been disabled!');
     }
 },
+displayForecast2(data) {
+  const hourlyData = data.list; // Assume 'data.list' contains hourly weather data (3-hour intervals)
+  const labels = [];
+  const avgTemps = [];
+
+  // Loop through the hourly data for today (assuming the data is sorted by time)
+  hourlyData.forEach(entry => {
+    const date = new Date(entry.dt * 1000); // Convert from UNIX timestamp (multiply by 1000 for JavaScript)
+    const hours = date.getHours();
+    const currentDay = new Date().getDate(); // Get the current day
+
+    if (date.getDate() === currentDay) {
+      labels.push(`${hours}:00`); // Add the hour to labels (in 3-hour intervals)
+      avgTemps.push(entry.main.temp); // Push temperature into the array
+    }
+  });
+  
+  // Call the function to create the hourly summary chart with today's 3-hour interval data
+  this.createHourlySummaryChart(labels, avgTemps);
+},
+createHourlySummaryChart(labels, avgTemps) {
+  const ctx = document.getElementById('dailySummaryChart').getContext('2d');
+
+  // Destroy previous chart if it exists to avoid overlap
+  if (this.dailySummaryChart) {
+    this.dailySummaryChart.destroy();
+  }
+
+  // Create a new bar chart with hourly temperatures
+  this.dailySummaryChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: labels, // Hourly labels (e.g., 0:00, 1:00, ...)
+      datasets: [{
+        label: 'Hourly Temperature for Today',
+        data: avgTemps, // Temperature data for each hour
+        backgroundColor: 'rgba(255, 206, 86, 0.2)',
+        borderColor: 'rgba(255, 206, 86, 1)',
+        borderWidth: 1
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {      
+        legend: {
+        display: false // Hide the legend
+      },
+
+        title: {
+          display: true,
+          text: 'Temperature Over Time'
+        }
+      },
+      scales: {
+        x: {
+          title: {
+            display: true,
+            text: 'Time (Hour)'
+          }
+        },
+        y: {
+          title: {
+            display: true,
+            text: 'Temperature (°C)'
+          }
+        }
+      }
+    }
+  });
+},
+
 
   search() {
     const city = document.querySelector(".search-bar").value;

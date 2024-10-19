@@ -9,9 +9,12 @@
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./style.css">
   <script src="./script.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 </head>
 
 <body>
+  
   <div id="dropdown">
     <select id="unit-select" name="degree" class="dropkey">
       <option value="C"> °Celsius ▼</option>
@@ -71,8 +74,11 @@
         <div class="temp-avg">Avg Temp of a day: 34°C</div>
         <div class="temp-min">Min Temp of a day: 6.2°C</div>
         <div class="temp-max">Max Temp of a day: 60°C</div>
+        <canvas id="dailySummaryChart"></canvas>
       </div>
     </div>
+    <!-- Add these in your HTML where you want to display the charts -->
+    <div class="bottomcard"></div>
 
     <div class="bottomcard">
       <div class="card3">
