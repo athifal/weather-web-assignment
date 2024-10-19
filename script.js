@@ -53,6 +53,7 @@ const weather = {
     document.querySelector(".humidity").innerText = `Humidity: ${humidity}%`;
     document.querySelector(".wind").innerText = `Wind speed: ${windSpeed} km/h`;
     document.querySelector(".weather").classList.remove("loading");
+    document.querySelector(".temp-threshold2").innerText = `Select Temperature Threshold °${this.unit} `;
   },
 
   displayForecast(data) {
@@ -76,11 +77,19 @@ const weather = {
   },
 
   checkAlerts(currentTemp) {
-    const tempInCelsius = this.convertToCelsius(currentTemp);
-    if (this.temperatureThreshold !== null && tempInCelsius > this.temperatureThreshold) {
-      alert(`Alert: Temperature exceeds ${this.temperatureThreshold}°C!`);
+    if (this.temperatureThreshold !== null) {
+        // Convert the current temperature to Celsius before comparison
+        const tempInCelsius = this.convertToCelsius(currentTemp);
+        
+        // Check the alert using the stored Celsius value
+        if (tempInCelsius > this.temperatureThreshold) {
+            // Convert the threshold back to the current unit for display
+            const alertTemp = this.convertTemp(this.temperatureThreshold, this.unit);
+            alert(`Alert: Temperature exceeds ${alertTemp}°${this.unit}!`);
+        }
     }
-  },
+},
+
 
   convertToCelsius(temp) {
     if (this.unit === "F") {
@@ -94,9 +103,15 @@ const weather = {
 
   setAlerts() {
     const tempInput = document.getElementById('temp-threshold').value;
-    this.temperatureThreshold = tempInput ? parseFloat(tempInput) : null;
-    alert('Alerts have been set!');
-  },
+    if (tempInput) {
+        // Convert the input value based on the current unit to Celsius
+        this.temperatureThreshold = this.convertToCelsius(parseFloat(tempInput));
+        alert(`Alerts have been set to ${tempInput}°${this.unit}!`);
+    } else {
+        this.temperatureThreshold = null;
+        alert('Alerts have been disabled!');
+    }
+},
 
   search() {
     const city = document.querySelector(".search-bar").value;
@@ -119,8 +134,18 @@ document.querySelector(".search button").addEventListener("click", () => weather
 document.querySelector(".search-bar").addEventListener("keyup", (event) => {
   if (event.key === "Enter") weather.search();
 });
+// Handle unit change to correctly convert and display threshold
 document.querySelector("select").addEventListener("change", (evt) => {
+  const previousUnit = weather.unit;
   weather.unit = evt.target.value;
+  
+  // Convert the stored threshold to the new unit for display
+  if (weather.temperatureThreshold !== null) {
+      // Display the threshold in the new unit, but keep storing it in Celsius
+      const thresholdInNewUnit = weather.convertTemp(weather.temperatureThreshold, weather.unit);
+      weather.temperatureThreshold = parseFloat(weather.convertToCelsius(thresholdInNewUnit));
+  }
+
   const city = document.querySelector(".city").innerText.split("Weather in ")[1] || "Bangalore";
   weather.fetchWeather(city); // Re-fetch with the new unit
 });
@@ -129,7 +154,7 @@ document.getElementById('set-alerts').addEventListener('click', () => weather.se
 // Fetch weather for a default city on page load
 window.onload = function () {
   const city = "Bangalore"; // Default city
-  weather.fetchWeather(city); // Fetch weather for Bangalore
+  weather.fetchWeather(city); 
   
   // Set an interval to refresh weather data every 5 minutes
   weather.startInterval(city);
