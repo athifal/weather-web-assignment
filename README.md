@@ -1,5 +1,5 @@
 # Real-Time Data Processing System for Weather Monitoring
-The application is hosted on GitHub. You can access it [here](https://github.com/athifal/weather-monitoring).
+The application is hosted on GitHub. You can access it [https://athifal.github.io/weather-web-assignment/](https://athifal.github.io/weather-web-assignment/).
 
 ## Objective
 The objective of this application is to monitor weather conditions in real-time using the OpenWeatherMap API. Users can view current weather, 5-day forecasts, and configure alerting thresholds for temperature. The weather data is automatically updated every 5 minutes, and users can set their preferences for the temperature unit (Celsius, Kelvin, or Fahrenheit).
@@ -42,7 +42,7 @@ Daily summaries and trends, including average, maximum, and minimum temperatures
 To clone the repository, use the following command:
 
 ```bash
-git clone https://github.com/athifal/weather-monitoring.git
+git clone https://github.com/athifal/weather-web-assignment.git
 ```
 Navigate to the Cloned Directory
 Open your terminal or command prompt and change to the project directory:
