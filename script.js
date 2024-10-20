@@ -123,9 +123,12 @@ displayForecast2(data) {
   hourlyData.forEach(entry => {
     const date = new Date(entry.dt * 1000); // Convert from UNIX timestamp (multiply by 1000 for JavaScript)
     const hours = date.getHours();
-    const currentDay = new Date().getDate(); // Get the current day
+    
+    const currentDay = new Date(); // Get the current date
+    const tomorrow = new Date();
+    tomorrow.setDate(currentDay.getDate() + 1); // Set tomorrow's date
 
-    if (date.getDate() === currentDay) {
+    if (date.getDate() === currentDay.getDate() || date.getDate() === tomorrow.getDate()) { // Get the current day
       labels.push(`${hours}:00`); // Add the hour to labels (in 3-hour intervals)
       avgTemps.push(entry.main.temp); // Push temperature into the array
     }
@@ -148,7 +151,7 @@ createHourlySummaryChart(labels, avgTemps) {
     data: {
       labels: labels, // Hourly labels (e.g., 0:00, 1:00, ...)
       datasets: [{
-        label: 'Hourly Temperature for Today',
+        label: 'Hourly Temperature for Today and tomorrow',
         data: avgTemps, // Temperature data for each hour
         backgroundColor: 'rgba(255, 206, 86, 0.2)',
         borderColor: 'rgba(255, 206, 86, 1)',
